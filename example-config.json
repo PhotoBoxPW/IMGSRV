@@ -1,0 +1,9 @@
+{
+  "token": "thebigsecrettokenforsecretstuff",
+  "max_file_size": 5242880,
+  "redis_password": "",
+  "redis_address": "localhost",
+  "redis_port": 6379,
+  "redis_db": 1,
+  "postgres_connect": "dbname=test user=postgres"
+}

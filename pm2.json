@@ -1,0 +1,9 @@
+{
+	"apps": [
+		{
+			"name": "PhotoBoxImgSrv",
+			"script": "python3.6",
+			"args": "server.py"
+		}
+	]
+}

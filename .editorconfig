@@ -1,0 +1,5 @@
+[*.py]
+end_of_line = lf
+tab_width = 4
+trim_trailing_whitespace = true
+indent_style = space

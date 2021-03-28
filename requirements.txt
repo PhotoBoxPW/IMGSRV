@@ -1,0 +1,13 @@
+flask
+pillow
+requests[socks]
+wand
+sentry_sdk
+redis
+numpy
+scipy
+psycopg2-binary
+cairosvg
+apng
+lottie[GIF]
+colour
