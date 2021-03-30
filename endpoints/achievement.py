@@ -9,8 +9,8 @@ class Achievement(Endpoint):
     def generate(self, kwargs):
         text = kwargs['text'][:24]
         challenge = False if not 'challenge' in kwargs else bool(kwargs['challenge'])
-        icon_x = 13 if not 'icon_x' in kwargs else bool(kwargs['icon_x'])
-        icon_y = 6 if not 'icon_y' in kwargs else bool(kwargs['icon_y'])
+        icon_x = 13 if not 'icon_x' in kwargs else int(kwargs['icon_x'])
+        icon_y = 6 if not 'icon_y' in kwargs else int(kwargs['icon_y'])
         color = '#fc86fc' if challenge else '#f8f628'
 
         if not 'header' in kwargs:
