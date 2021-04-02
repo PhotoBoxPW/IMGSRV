@@ -63,7 +63,7 @@ def close_db(error):
 
 @app.route('/ping', methods=['GET'])
 def ping():
-    return jsonify({"ok": True, "time": time.time() })
+    return jsonify({'ok': True, 'time': time.time()})
 
 
 @app.route('/stats', methods=['GET'])
@@ -103,10 +103,12 @@ def api(endpoint):
             capture_exception(br)
         return jsonify({'status': 400, 'code': 0, 'error': str(br)}), 400
     except InvalidImage as e:
-        return jsonify({'status': 400, 'code': 2, 'error': str(e) }), 400
+        return jsonify({'status': 400, 'code': 2, 'error': str(e)}), 400
     except KeyError as e:
-        return jsonify({'status': 400, 'code': 1, 'error': 'Missing parameter: ' + str(e).split('\'')[1], 'param': str(e).split('\'')[1] }), 400
+        return jsonify({'status': 400, 'code': 1, 'error': 'Missing parameter: ' + str(e).split('\'')[1], 'param': str(e).split('\'')[1]}), 400
     except Exception as e:
+        if str(e).endswith('is not a recognized color.'):
+            return jsonify({'status': 400, 'code': 3, 'error': str(e)}), 400
         traceback.print_exc()
         if 'sentry_dsn' in config:
             capture_exception(e)
