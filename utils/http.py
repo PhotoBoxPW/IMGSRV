@@ -9,6 +9,7 @@ from lottie.exporters import exporters
 from lottie.importers import importers
 
 from utils import exceptions
+from flask import request
 
 config = json.load(open('config.json'))
 MAX_FILE_SIZE = config.get('max_file_size', 5 * 1024 * 1024)  # in bytes
@@ -30,7 +31,12 @@ def get(url, **kwargs):
 
 
 def get_content_raw(url, **kwargs):
-    return get(url, stream=True, **kwargs).content
+    r = get(url, stream=True, timeout=5, **kwargs)
+    r.raw.decode_content = True
+    raw = r.raw.read(MAX_FILE_SIZE + 1)
+    if len(raw) > MAX_FILE_SIZE:
+        raise exceptions.InvalidImage(f'The image `{url}` is too large to be processed! (5MB max)')
+    return r.content
 
 
 def get_image(url, formats=None, **kwargs):
@@ -51,12 +57,13 @@ def get_image_and_raw(url, formats=None, **kwargs):
 
         # Parse Lottie
         if raw[:8] == b'{"v":"5.':
-           importer = importers.get('lottie')
-           exporter = exporters.get('webp')
-           an = importer.process(BytesIO(raw))
-           b = BytesIO()
-           exporter.process(an, b)
-           b.seek(0)
+            prefer_png = bool(request.headers.get('X-Prefer-PNG', False))
+            importer = importers.get('lottie')
+            exporter = exporters.get('png' if prefer_png else 'gif')
+            an = importer.process(BytesIO(raw))
+            b = BytesIO()
+            exporter.process(an, b)
+            b.seek(0)
 
         # Parse SVG
         if raw[:4] == b'<svg':
