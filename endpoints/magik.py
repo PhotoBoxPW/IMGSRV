@@ -6,21 +6,21 @@ from wand import image
 from utils import http
 from utils.endpoint import Endpoint, setup
 from utils.exceptions import BadRequest
+from utils.perspective import box_resize
 
 
 @setup
 class Magik(Endpoint):
     def generate(self, kwargs):
         image_url = kwargs['image']
-        avatar = BytesIO(http.get_content_raw(image_url))
+        avatar_img = http.get_image(image_url)
+        avatar_img = box_resize(avatar_img, 500)
+        avatar = self.to_bytes(avatar_img)
+
         try:
             img = image.Image(file=avatar)
         except Exception as e:
             raise BadRequest(f'The image could not be loaded: {e}')
-
-        if img.animation:
-            img = img.convert('png')
-        img.transform(resize='400x400')
 
         try:
             multiplier = int(kwargs['mult'])
