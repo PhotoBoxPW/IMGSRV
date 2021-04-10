@@ -12,5 +12,7 @@ class DBots(Endpoint):
         base = Image.open(self.get_asset('dbots.bmp'))
         img = http.get_image(image_url).convert('RGBA')
         img = ImageOps.fit(img, (base.width, base.height), method=Image.LANCZOS)
-        if not no_overlay: img.paste(base, (0, 0), base)
+        if not no_overlay:
+            img.paste(base, (0, 0), base)
+            img = img.convert('RGB')
         return self.send_file(img)
