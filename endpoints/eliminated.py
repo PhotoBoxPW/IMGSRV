@@ -21,9 +21,12 @@ class Eliminated(Endpoint):
         base = Image.new('RGBA', (10, 10))
         canv = ImageDraw.Draw(base)
 
-        prefix_size = canv.textsize(elim_text, font=font)
-        text_size = canv.textsize(text, font=font)
-        num_size = canv.textsize(num, font=font)
+        prefix_bbox = canv.textbbox((0, 0), elim_text, font=font)
+        prefix_size = (prefix_bbox[2] - prefix_bbox[0], prefix_bbox[3] - prefix_bbox[1])
+        text_bbox = canv.textbbox((0, 0), text, font=font)
+        text_size = (text_bbox[2] - text_bbox[0], text_bbox[3] - text_bbox[1])
+        num_bbox = canv.textbbox((0, 0), num, font=font)
+        num_size = (num_bbox[2] - num_bbox[0], num_bbox[3] - num_bbox[1])
 
         base = Image.new('RGBA', (prefix_size[0] + text_size[0] + num_size[0] + fire.width + 20, max(prefix_size[1], text_size[1], num_size[1])))
         canv = ImageDraw.Draw(base)

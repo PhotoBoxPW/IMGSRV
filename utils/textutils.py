@@ -5,6 +5,19 @@ import os
 # from PIL import ImageFont
 from PIL import Image, ImageFont
 
+
+
+def _font_text_size(font, text):
+    sample = text if text else "Ag"
+    left, top, right, bottom = font.getbbox(sample)
+    return right - left, bottom - top
+
+
+def _draw_text_size(draw, text, font):
+    left, top, right, bottom = draw.textbbox((0, 0), text, font=font)
+    return right - left, bottom - top
+
+
 def wrap(font, text, line_width):
     words = text.split()
 
@@ -14,7 +27,7 @@ def wrap(font, text, line_width):
     for word in words:
         newline = ' '.join(line + [word])
 
-        w, h = font.getsize(newline)
+        w, h = _font_text_size(font, newline)
 
         if w > line_width:
             lines.append(' '.join(line))
@@ -31,10 +44,10 @@ def wrap(font, text, line_width):
 def auto_text_size(text, font, desired_width, fallback_size=25, font_scalar=1, range=range(20, 40)):
     for size in range:
         new_font = font.font_variant(size=floor(size * font_scalar))
-        font_width, _ = new_font.getsize(text)
+        font_width, _ = _font_text_size(new_font, text)
         if font_width >= desired_width:
             wrapped = wrap(new_font, text, desired_width)
-            w = max(new_font.getsize(line)[0] for line in wrapped.splitlines())
+            w = max(_font_text_size(new_font, line)[0] for line in wrapped.splitlines())
             if abs(desired_width - w) <= 10:
                 return new_font, wrapped
 
@@ -57,7 +70,7 @@ def auto_text_size(text, font, desired_width, fallback_size=25, font_scalar=1, r
 
 def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: ImageFont='', fill='black'):
     initial_coords = coords
-    emoji_size = font.getsize(text)[1]
+    emoji_size = _font_text_size(font, text)[1]
 
     emoji_set = 'twemoji'
     if emoji_set == 'apple':
@@ -106,7 +119,7 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
             if emoji == 'u200D':
                 pass
             elif emoji + '.png' not in emojis:
-                size = draw.textsize(char, font=font)
+                size = _draw_text_size(draw, char, font)
                 draw.text(coords, char, font=font, fill=fill)
                 coords = (coords[0] + size[0], coords[1])
             else:
@@ -144,7 +157,7 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
             if emoji == '200d':
                 pass
             elif emoji + '.png' not in emojis:
-                size = draw.textsize(char, font=font)
+                size = _draw_text_size(draw, char, font)
                 draw.text(coords, char, font=font, fill=fill)
                 coords = (coords[0] + size[0], coords[1])
             else:

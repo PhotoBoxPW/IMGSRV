@@ -25,7 +25,8 @@ class Citation(Endpoint):
         canv.text((20, 10), text_0, font=font, fill='black')
         render_text_with_emoji(base, canv, (20, 45), text_1, font)
         # canv.text((20, 45), text_1, font=font)
-        size = canv.textsize(footer, font=font)
+        bbox = canv.textbbox((0, 0), footer, font=font)
+        size = (bbox[2] - bbox[0], bbox[3] - bbox[1])
         new_width = (base.width - size[0]) / 2
         canv.text((new_width, 130), footer, font=font, align='center', fill='black')
 

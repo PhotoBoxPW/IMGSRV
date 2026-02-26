@@ -25,7 +25,8 @@ class Youtube(Endpoint):
         base.paste(avatar, (17, 33), avatar)
         canv = ImageDraw.Draw(base)
         op = wrap(font, username, 1150)
-        size = canv.textsize(username, font=font)
+        size_bbox = canv.textbbox((0, 0), username, font=font)
+        size = (size_bbox[2] - size_bbox[0], size_bbox[3] - size_bbox[1])
         comment = wrap(font2, text, 550)
         num = randint(1, 40)
         plural = '' if num == 1 else 's'

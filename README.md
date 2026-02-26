@@ -6,6 +6,37 @@ The microservice powering [PhotoBox](https://photobox.pw), a slimmed down versio
 - [uv](https://docs.astral.sh/uv/)
 - [Redis](https://redis.io/) ([quickstart](https://redis.io/topics/quickstart), [db persistence](https://redis.io/topics/persistence))
 
+## System libraries (required by image backends)
+Some Python packages in this project require native system libraries:
+- `cairosvg` / `cairocffi` need **Cairo**
+- `wand` needs **ImageMagick**
+
+### Ubuntu / Debian
+```bash
+sudo apt update
+sudo apt install -y libcairo2 libcairo2-dev imagemagick libmagickwand-dev
+```
+
+### Fedora / RHEL
+```bash
+sudo dnf install -y cairo cairo-devel ImageMagick ImageMagick-devel
+```
+
+### macOS (Homebrew)
+```bash
+brew install cairo imagemagick
+```
+
+### Windows
+Install both with package managers or official installers:
+- Cairo: `winget install cairo.cairo` (or MSYS2 Cairo packages)
+- ImageMagick: `winget install ImageMagick.ImageMagick`
+
+After installing system libraries, run:
+```bash
+uv sync
+```
+
 ## Installation
 ```bash
 git clone https://github.com/PhotoBoxPW/IMGSRV
