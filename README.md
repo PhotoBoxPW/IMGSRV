@@ -2,22 +2,24 @@
 The microservice powering [PhotoBox](https://photobox.pw), a slimmed down version of [DankMemer/imgen](https://github.com/DankMemer/imgen) with some extra features. (transparent gifs, fit/contain images, other cropping functions)
 
 ## Prerequisites
-- Python 3.x
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/)
 - [Redis](https://redis.io/) ([quickstart](https://redis.io/topics/quickstart), [db persistence](https://redis.io/topics/persistence))
-- [PostgresSQL](https://www.postgresql.org/) ([download & install](https://www.postgresql.org/download/))
 
 ## Installation
 ```bash
 git clone https://github.com/PhotoBoxPW/IMGSRV
 cd IMGSRV
-pip3 install -r requirements.txt
-# pip3 install -r optional-requirements.txt
+uv sync
+# Optional extras
+# uv sync --extra perf
+# uv sync --extra dev
 ```
-> NOTE: Read the [installation instructions for Pillow-SIMD](https://github.com/uploadcare/pillow-simd#installation) before installing optional requirements.
+> NOTE: `perf` includes `pillow-simd`, which has platform-specific build requirements. See the [installation instructions for Pillow-SIMD](https://github.com/uploadcare/pillow-simd#installation).
 
 ## Startup
-```
-python3 server.py
+```bash
+uv run python server.py
 ```
 
 With pm2

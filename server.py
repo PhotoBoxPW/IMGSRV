@@ -33,32 +33,41 @@ if 'sentry_dsn' in config:
                     integrations=[FlaskIntegration()])
 
 
-@app.before_first_request
-def init_app():
-    def run_gc_forever(loop):
-        asyncio.set_event_loop(loop)
-        try:
-            loop.run_forever()
-        except (SystemExit, KeyboardInterrupt):
-            loop.close()
+_init_lock = threading.Lock()
 
-    gc_loop = asyncio.new_event_loop()
-    gc_thread = threading.Thread(target=run_gc_forever, args=(gc_loop,))
-    gc_thread.start()
-    g.gc_loop = gc_loop
 
-    from utils.endpoint import endpoints as endpnts
+def init_app_once():
     global endpoints
-    endpoints = endpnts
-    # idk why this is here, but whatever
-    import endpoints as _
+    if endpoints is not None:
+        return
+
+    with _init_lock:
+        if endpoints is not None:
+            return
+
+        def run_gc_forever(loop):
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_forever()
+            except (SystemExit, KeyboardInterrupt):
+                loop.close()
+
+        gc_loop = asyncio.new_event_loop()
+        gc_thread = threading.Thread(target=run_gc_forever, args=(gc_loop,), daemon=True)
+        gc_thread.start()
+
+        # `AssetCache` reads this from flask.g at import time.
+        g.gc_loop = gc_loop
+
+        from utils.endpoint import endpoints as endpnts
+        endpoints = endpnts
+        # idk why this is here, but whatever
+        import endpoints as _
 
 
-@app.teardown_appcontext
-def close_db(error):
-    """Closes the database again at the end of the request."""
-    if hasattr(g, 'pg'):
-        g.pg.close()
+@app.before_request
+def ensure_app_initialized():
+    init_app_once()
 
 
 @app.route('/ping', methods=['GET'])
