@@ -5,4 +5,4 @@ ujson==5.11.0
 hiredis==3.3.0
 pillow-simd==9.5.0.post2 ; platform_system != "Windows"
 # dev
-black==26.1.0
+black==26.3.1
