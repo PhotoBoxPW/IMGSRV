@@ -1,7 +1,7 @@
 # Legacy file retained for compatibility.
 # Source of truth is pyproject.toml + uv.lock.
 # perf
-ujson==5.11.0
+ujson==5.12.0
 hiredis==3.3.0
 pillow-simd==9.5.0.post2 ; platform_system != "Windows"
 # dev
