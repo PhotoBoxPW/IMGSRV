@@ -7,7 +7,7 @@ wand==0.7.0
 sentry-sdk==2.53.0
 redis==7.2.1
 numpy==2.4.2
-cairosvg==2.8.2
+cairosvg==2.9.0
 apng==0.3.4
 lottie==0.7.2
 colour==0.1.5
